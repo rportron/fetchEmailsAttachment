@@ -4,7 +4,7 @@ import os # pour la sauvearde des pièces-jointes
 
 def lecture_emails(boite, mot_de_passe, serveur_imap = 'imap.free.fr'):
     """
-    Se connecte à la boite aux lettres, lit l'email et renvoie le contenu de l'email
+    Se connecte à la boite aux lettres
     Vérifie le nombre de mails
     Enregistre les pièces-jointes des emails
     """
@@ -16,7 +16,6 @@ def lecture_emails(boite, mot_de_passe, serveur_imap = 'imap.free.fr'):
     #connection.search(None, 'UNSEEN') # renvoie la liste des emails non lus : ('OK', [b'17 18 19'])
 
     (email_status, [nombre_de_mails]) = connection.search(None, 'ALL')
-    #print('Nombre de mails = (pour la boucle, pour ne garder que les 5 derniers) ...', nombre_de_mails)
     for dummy_email in nombre_de_mails.split():
         print('\n *** Traitement du mail numéro {}'.format(dummy_email.decode('utf8'))) # car dummy_email est au format binaire
         #connection.store('1', '+FLAGS', '(%s)' % 'SEEN') => renvoie ('OK', [b'1 (FLAGS (\\Seen SEEN))'])
@@ -26,23 +25,18 @@ def lecture_emails(boite, mot_de_passe, serveur_imap = 'imap.free.fr'):
         mail = email.message_from_string(email_body.decode('utf8'))
         #print('Sujet du mail : ', mail['Subject']) #renvoie le sujet de l'email
         #print('mail.get_content_maintype() : ', mail.get_content_maintype())
-        #print('Estce que le mail est multipart (commande imap) : ', mail.is_multipart()) # => renvoie True
-        #print('Content type du mail : ', mail.get_content_type()) # renvoie multipart/mixed
-        #print('Fichier détecté : ', mail.get_filename()) # renvoie None
-        #print('Boundary détecté : ', mail.get_boundary()) # OK renvoie la chaîne de "boundary"
 
         if mail.is_multipart(): # => renvoie True
             compteur = 0
             for part in mail.walk():
                 compteur += 1
                 print('Partie {} dans mail.walk avec comme Content Type : {}'.format(compteur, part.get_content_type()))
-                #print('Content type : ', part.get_content_type()) # On a bien les différents content type du mail
                 fileName = part.get_filename() #Renvoie None si pas de fichier attaché
                 if bool(fileName): # None => False
                     print('Fichier détecté : {}'.format(fileName))
-                    filePath = os.path.join('/home/portron/avis-SFAC/test', fileName)
+                    filePath = os.path.join('', fileName)
                     if not os.path.isfile(filePath): # Vérifie si le fichier existe déjà
-                        print('On rentre dans l ecriture du fichier')
+                        print('Écriture du fichier')
                         fp = open(filePath, 'wb')
                         fp.write(part.get_payload(decode=True))
                         fp.close()
