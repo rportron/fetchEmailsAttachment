@@ -1,8 +1,8 @@
 import imaplib # pour la connexion au serveur
 import email # pour la gestion des emails
-import os # pour la sauvearde des pièces-jointes
+import os # pour la sauvegarde des pièces-jointes
 
-def lecture_emails(boite, mot_de_passe, serveur_imap = 'imap.free.fr'):
+def enregistre_piece_jointe(boite, mot_de_passe, serveur_imap = 'imap.free.fr'):
     """
     Se connecte à la boite aux lettres
     Vérifie le nombre de mails
@@ -44,4 +44,4 @@ def lecture_emails(boite, mot_de_passe, serveur_imap = 'imap.free.fr'):
     connection.close()
     connection.logout()
 
-lecture_emails('username', 'passwd')
+enregistre_piece_jointe('username', 'passwd')
