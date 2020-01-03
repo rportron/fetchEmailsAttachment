@@ -47,13 +47,18 @@ def fetchattachments(username, password, folder, verbose = True, imapserver = 'i
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Download all attachments from an email account")
     parser.add_argument('folder', help="the folder where you want to save your attachements")
+    parser.add_argument('email', type=str, help="imap account user id")
+    parser.add_argument('password', type=str, help="imap account password")
     parser.add_argument('-v', '--verbose', action='store_true', help="verbose mode")
+    #parser.add_argument('-imap', help="imap server (by default is imap.free.fr)")
     args = parser.parse_args()
     folder = args.folder
+    identifiant = args.email
+    password = args.password
     if args.verbose:
         verbose = True
-        print("Verbose mode activated\n")
+        print("\nVerbose mode activated\n")
     else:
         verbose = False
 
-    fetchattachments('username', 'passwd', folder, verbose)
+    fetchattachments(identifiant, password, folder, verbose)
