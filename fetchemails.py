@@ -1,8 +1,9 @@
 import imaplib # to connect to the imap server
 import email # to retrieve emails
 import os # to save attachments
+import argparse # gestion des arguments
 
-def fetchattachments(username, password, imapserver = 'imap.free.fr'):
+def fetchattachments(username, password, folder, imapserver = 'imap.free.fr'):
     """
     Connect to the mailox
     Check emails
@@ -29,14 +30,18 @@ def fetchattachments(username, password, imapserver = 'imap.free.fr'):
                 fileName = part.get_filename() #Renvoie None si pas de fichier attaché
                 if bool(fileName): # None => False
                     print('Detected file : {}'.format(fileName))
-                    filePath = os.path.join('', fileName)
+                    filePath = os.path.join(folder, fileName)
                     if not os.path.isfile(filePath): # Check is there is already a file with the same name
                         print('Wirting file')
                         fp = open(filePath, 'wb')
                         fp.write(part.get_payload(decode=True))
                         fp.close()
-
     connection.close()
     connection.logout()
 
-fetchattachments('username', 'passwd')
+parser = argparse.ArgumentParser(description="Download all attachments from an email account")
+parser.add_argument('folder', help="the folder where you want to save your attachements")
+args = parser.parse_args()
+folder = args.folder
+
+fetchattachments('username', 'passwd', folder)
