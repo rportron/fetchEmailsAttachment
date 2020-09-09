@@ -3,7 +3,7 @@ import email # to retrieve emails
 import os # to save attachments
 import argparse # gestion des arguments
 
-def fetchattachments(username, password, folder, verbose = True, imapserver = 'imap.free.fr'):
+def fetchattachments(username, password, folder, verbose = True, delete = False, imapserver = 'imap.free.fr'):
     """
     Connect to the mailox
     Check emails
@@ -41,6 +41,12 @@ def fetchattachments(username, password, folder, verbose = True, imapserver = 'i
                         fp = open(filePath, 'wb')
                         fp.write(part.get_payload(decode=True))
                         fp.close()
+        if delete:
+            connection.store(dummy_email, '+FLAGS', '\\Deleted')
+    if delete:
+        connection.expunge()
+        if verbose:
+            print('\nEmails deleted')
     connection.close()
     connection.logout()
 
@@ -49,6 +55,7 @@ if __name__ == "__main__":
     parser.add_argument('folder', help="the folder where you want to save your attachements")
     parser.add_argument('email', type=str, help="imap account user id")
     parser.add_argument('password', type=str, help="imap account password")
+    parser.add_argument('-d', '--delete', action='store_true', help="delete emails after saving attachment")
     parser.add_argument('-v', '--verbose', action='store_true', help="verbose mode")
     #parser.add_argument('-imap', help="imap server (by default is imap.free.fr)")
     args = parser.parse_args()
@@ -60,5 +67,11 @@ if __name__ == "__main__":
         print("\nVerbose mode activated\n")
     else:
         verbose = False
+    if args.delete:
+        delete = True
+        if verbose:
+            print("\nMessages will be deleted")
+    else:
+        delete = False
 
-    fetchattachments(identifiant, password, folder, verbose)
+    fetchattachments(identifiant, password, folder, verbose, delete)
