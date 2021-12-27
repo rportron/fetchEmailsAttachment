@@ -2,6 +2,7 @@ import imaplib # to connect to the imap server
 import email # to retrieve emails
 import os # to save attachments
 import argparse # gestion des arguments
+from time import sleep # to do a pause
 
 def fetchattachments(username, password, folder, verbose = True, delete = False, imapserver = 'imap.free.fr'):
     """
@@ -69,9 +70,13 @@ if __name__ == "__main__":
         verbose = False
     if args.delete:
         delete = True
-        if verbose:
-            print("\nMessages will be deleted")
+        print("\nMessages will be deleted\nYou have now 5 seconds to cancel")
+        sleep(5)
+        print("\nOK, let's go")
     else:
         delete = False
-
-    fetchattachments(identifiant, password, folder, verbose, delete)
+    if args.imap:
+        imap = args.imap
+        fetchattachments(identifiant, password, folder, verbose, delete, imap)
+    else:
+        fetchattachments(identifiant, password, folder, verbose, delete)
