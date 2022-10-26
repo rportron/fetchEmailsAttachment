@@ -70,7 +70,7 @@ if __name__ == "__main__":
         verbose = False
     if args.delete:
         delete = True
-        print("\nMessages will be deleted\nYou have now 5 seconds to cancel")
+        print(f"\nMessages will be deleted from {identifiant}\nYou have now 5 seconds to cancel")
         sleep(5)
         print("\nOK, let's go")
     else:
